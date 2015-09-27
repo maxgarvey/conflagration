@@ -2,13 +2,17 @@ package server
 
 import (
 	"fmt"
-	"github.com/gorilla/mux"
+	"io"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 type Instance struct {
 	ListenAddress string
 	ListenPort    string
+
+	StaticFilesDirectory string
 
 	Router *mux.Router
 }
@@ -23,32 +27,39 @@ func New() Instance {
 func (instance *Instance) Initialize() {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/status/", StatusHandler)
-	router.HandleFunc("/api/", ApiHandler)
-	router.Handle("/static/{staticPath}",
-		http.StripPrefix(
-			"/static/",
+	router.HandleFunc("/status", StatusHandler)
+	router.HandleFunc("/api", ApiHandler)
+	router.PathPrefix("/static").Handler(
+		http.StripPrefix("/static",
 			http.FileServer(
 				http.Dir(
-					"static"))))
+					// TODO: replace "static" with instance.StaticFilesDirectory
+					"./static")),
+		),
+	)
 
 	instance.Router = router
 }
 
 func (instance *Instance) Run() {
 	fmt.Printf("in server.Run().\n")
-	http.ListenAndServe(":8080", instance.Router)
+	http.ListenAndServe(
+		// TODO: replace the "8080" with instance.ListenPort
+		fmt.Sprintf(":%d", 8080),
+		instance.Router,
+	)
 }
 
 func StatusHandler(respW http.ResponseWriter, req *http.Request) {
 	fmt.Printf("in status handler.\n")
+
+	respW.WriteHeader(http.StatusOK)
+	io.WriteString(respW, "status OK\n")
 }
 
 func ApiHandler(respW http.ResponseWriter, req *http.Request) {
 	fmt.Printf("in api handler.\n")
-}
 
-// func StaticHandler() http.HandlerFunc {
-// 	fmt.Printf("in static handler.\n")
-// 	return http.FileServer(http.Dir("/Users/maxgarvey/go/src/github.com/maxgarvey/conflagration/static")).ServeHTTP
-// }
+	respW.WriteHeader(http.StatusOK)
+	io.WriteString(respW, "api response here\n")
+}
