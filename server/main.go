@@ -42,7 +42,7 @@ func (instance *Instance) Initialize() {
 }
 
 func (instance *Instance) Run() {
-	fmt.Printf("in server.Run().\n")
+	fmt.Printf("in server.Run().\n") // debug
 	http.ListenAndServe(
 		// TODO: replace the "8080" with instance.ListenPort
 		fmt.Sprintf(":%d", 8080),
@@ -51,14 +51,14 @@ func (instance *Instance) Run() {
 }
 
 func StatusHandler(respW http.ResponseWriter, req *http.Request) {
-	fmt.Printf("in status handler.\n")
+	fmt.Printf("in status handler.\n") // debug
 
 	respW.WriteHeader(http.StatusOK)
 	io.WriteString(respW, "status OK\n")
 }
 
 func ApiHandler(respW http.ResponseWriter, req *http.Request) {
-	fmt.Printf("in api handler.\n")
+	fmt.Printf("in api handler.\n") // debug
 
 	respW.WriteHeader(http.StatusOK)
 	io.WriteString(respW, "api response here\n")

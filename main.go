@@ -11,14 +11,14 @@ var (
 )
 
 func main() {
-	fmt.Printf("in func main\n")
+	//fmt.Printf("in func main\n") // debug
 	config()
 
 	serverInstance.Run()
 }
 
 func config() {
-	fmt.Printf("in func config\n")
+	//fmt.Printf("in func config\n") // debug
 
 	// TODO: importation from config file
 	configuration = Configuration{
