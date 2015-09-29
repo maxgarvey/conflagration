@@ -25,6 +25,12 @@ func config() {
 		"0.0.0.0",
 		"8000",
 		"./static",
+		// database credentials
+		"127.0.0.1",
+		"4567",
+		"dbuser",
+		"dbpass",
+		"dbname",
 	}
 
 	serverInstance = server.New()

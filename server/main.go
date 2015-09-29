@@ -18,7 +18,7 @@ type Instance struct {
 }
 
 func New() Instance {
-	fmt.Printf("in server New()\n")
+	fmt.Printf("in server New().\n") // debug
 
 	var instance Instance
 	return instance
@@ -76,23 +76,45 @@ func NewApiRouter() http.Handler {
 func ConfigurationsHandler(respW http.ResponseWriter, req *http.Request) {
 	fmt.Printf("in configurations handler.\n") // debug
 
-	// respW.WriteHeader(http.StatusOK)
-	// io.WriteString(respW, "api response here\n")
+	if req.Method != "GET" {
+		respW.WriteHeader(http.StatusNotImplemented)
+		io.WriteString(respW, "requests to this endpoint must use GET Method.\n")
+		return
+	}
 
 	respW.WriteHeader(http.StatusOK)                            // debug
 	io.WriteString(respW, "configurations api response here\n") // debug
 }
 
 func NewConfigurationHandler(respW http.ResponseWriter, req *http.Request) {
-	fmt.Printf("in new configuration handler.\n")
+	fmt.Printf("in new configuration handler.\n") // debug
+
+	if req.Method != "POST" {
+		respW.WriteHeader(http.StatusNotImplemented)
+		io.WriteString(respW, "requests to this endpoint must use POST Method.\n")
+		return
+	}
 
 	respW.WriteHeader(http.StatusOK)                                // debug
 	io.WriteString(respW, "new configuration api response here.\n") // debug
 }
 
 func GetPutConfigurationHandler(respW http.ResponseWriter, req *http.Request) {
-	fmt.Printf("in GET/PUT configuration handler.\n")
+	fmt.Printf("in GET/PUT configuration handler.\n") // debug
 
-	respW.WriteHeader(http.StatusOK)                               // debug
-	io.WriteString(respW, "get put configuration handler here.\n") // debug
+	if req.Method != "GET" || req.Method != "PUT" {
+		respW.WriteHeader(http.StatusNotImplemented)
+		io.WriteString(
+			respW, "requests to this endpoint must use GET or PUT Methods.\n")
+		return
+	}
+
+	if req.Method == "PUT" {
+		respW.WriteHeader(http.StatusAccepted)                     // debug
+		io.WriteString(respW, "put configuration handler here.\n") // debug
+		return
+	}
+
+	respW.WriteHeader(http.StatusOK)                           // debug
+	io.WriteString(respW, "put configuration handler here.\n") // debug
 }
