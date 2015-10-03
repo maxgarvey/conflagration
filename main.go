@@ -14,7 +14,7 @@ func main() {
 	//fmt.Printf("in func main\n") // debug
 	config()
 
-	serverInstance.Run()
+	serverInstance.Run(configuration.ListenPort)
 }
 
 func config() {
@@ -23,7 +23,7 @@ func config() {
 	// TODO: importation from config file
 	configuration = Configuration{
 		"0.0.0.0",
-		"8000",
+		"8080",
 		"./static",
 		// database credentials
 		"127.0.0.1",
@@ -33,6 +33,6 @@ func config() {
 		"dbname",
 	}
 
-	serverInstance = server.New()
+	serverInstance = server.New(configuration.StaticDirectory)
 	serverInstance.Initialize()
 }

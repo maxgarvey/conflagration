@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 )
@@ -17,10 +18,11 @@ type Instance struct {
 	Router *mux.Router
 }
 
-func New() Instance {
+func New(staticDirectory string) Instance {
 	fmt.Printf("in server New().\n") // debug
 
 	var instance Instance
+	instance.StaticFilesDirectory = staticDirectory
 	return instance
 }
 
@@ -41,20 +43,26 @@ func (instance *Instance) Initialize() {
 			http.FileServer(
 				http.Dir(
 					// TODO: replace "static" with instance.StaticFilesDirectory
-					"./static")),
+					instance.StaticFilesDirectory)),
 		),
 	)
 
 	instance.Router = router
 }
 
-func (instance *Instance) Run() {
+func (instance *Instance) Run(portNumber string) error {
 	fmt.Printf("in server.Run().\n") // debug
+	port, err := strconv.ParseInt(portNumber, 10, 64)
+	if err != nil {
+		return err
+	}
+
 	http.ListenAndServe(
 		// TODO: replace the "8080" with instance.ListenPort
-		fmt.Sprintf(":%d", 8080),
+		fmt.Sprintf(":%d", port),
 		instance.Router,
 	)
+	return nil
 }
 
 func StatusHandler(respW http.ResponseWriter, req *http.Request) {
